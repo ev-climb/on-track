@@ -1,11 +1,23 @@
-import { NAV_ITEMS } from './constants'
+import { BUTTON_TYPES, NAV_ITEMS } from './constants'
 
 export function isPageValid(page) {
   return Object.keys(NAV_ITEMS).includes(page)
 }
 
+export function isButtonTypeValid(type) {
+  return BUTTON_TYPES.includes(type)
+}
+
 export function isTimelineItemValid({ h }) {
   return isHourValid(h)
+}
+
+export function validateActivities(activities) {
+  return activities.every(isActivityValid)
+}
+
+export function isActivityValid(activity) {
+  return isNotEmptyString(activity)
 }
 
 export function isHourValid(h) {
@@ -20,10 +32,6 @@ export function validateSelectOptions(options) {
   return options.every(isSelectOptionValid)
 }
 
-function isSelectOptionValid({ value, label }) {
-  return isNumber(value) && isString(label)
-}
-
 export function isUndefinedOrNull(value) {
   return isNull(value) || isUndefined(value)
 }
@@ -32,12 +40,20 @@ export function isNumberOrNull(value) {
   return isNumber(value) || isNull(value)
 }
 
-function isNull(value) {
-  return value === null
+function isSelectOptionValid({ value, label }) {
+  return isNumber(value) && isNotEmptyString(label)
 }
 
-function isUndefined(value) {
+export function isUndefined(value) {
   return value === undefined
+}
+
+function isNotEmptyString(value) {
+  return isString(value) && value.length > 0
+}
+
+function isNull(value) {
+  return value === null
 }
 
 function isNumber(value) {
