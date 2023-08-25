@@ -1,5 +1,5 @@
-import { PAGE_TIMELINE } from './constants'
-import { isPageValid } from './validators'
+import { PAGE_TIMELINE, SECONDS_IN_HOUR, HOURS_IN_DAY, MIDNIGHT_HOUR } from './constants'
+import { isPageValid, isNull } from './validators'
 
 export function normalizePageHash() {
   const page = window.location.hash.slice(1)
@@ -13,14 +13,51 @@ export function normalizePageHash() {
   return PAGE_TIMELINE
 }
 
+export function normalizeSelectValue(value) {
+  return isNull(value) || isNaN(value) ? value : +value
+}
+
+export function generateActivities() {
+  return ['Coding', 'Reading', 'Training'].map((name, hours) => ({
+    id: id(),
+    name,
+    secondsToComplete: hours * SECONDS_IN_HOUR
+  }))
+}
+
+export function id() {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2)
+}
+
 export function generateTimelineItems() {
   const timelineItems = []
-  for (let h = 0; h < 24; h++) {
-    timelineItems.push({ h })
+
+  for (let hour = MIDNIGHT_HOUR; hour < HOURS_IN_DAY; hour++) {
+    timelineItems.push({
+      hour,
+      activityId: null
+    })
   }
+
   return timelineItems
 }
 
 export function generateActivitySelectOptions(activities) {
-  return activities.map((label, value) => ({ label, value }))
+  return activities.map((activity) => ({ value: activity.id, label: activity.name }))
+}
+
+export function generatePeriodSelectOptions(periodsInMinutes) {
+  return periodsInMinutes.map((period) => ({
+    value: period * 60,
+    label: generatePeriodSelectOptionsLabel(period)
+  }))
+}
+
+function generatePeriodSelectOptionsLabel(period) {
+  const h = Math.floor(period / 60)
+    .toString()
+    .padStart(2, 0)
+  const m = (period % 60).toString().padStart(2, 0)
+
+  return `${h}:${m}`
 }
