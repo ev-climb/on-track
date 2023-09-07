@@ -9,7 +9,7 @@ import {
   isPageValid
 } from '../validators'
 import TimelineItem from '../components/TimelineItem.vue'
-import { PAGE_TIMELINE } from '../constants'
+import { MIDNIGHT_HOUR, PAGE_TIMELINE } from '../constants'
 
 const props = defineProps({
   timelineItems: {
@@ -50,10 +50,11 @@ watchPostEffect(async () => {
 })
 
 function scrollToHour(hour) {
-  if (hour !== 0) {
-    timelineItemRefs.value[hour - 1].$el.scrollIntoView()
+  const options = { behavior: 'smooth' }
+  if (hour !== MIDNIGHT_HOUR) {
+    timelineItemRefs.value[hour - 1].$el.scrollIntoView(options)
   } else {
-    document.body.scrollIntoView()
+    document.body.scrollIntoView(options)
   }
 }
 </script>
